@@ -17,14 +17,14 @@ def download_video():
     try:
         ydl_opts = {
             'format': 'bestvideo/best',  # אפשר לשנות לפי הצורך
-            'outtmpl': '%(title)s.%(ext)s',  # מיקום שמירת הקבצים
+            'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),  # מיקום שמירת הקבצים
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
 
         # מציאת הקובץ שהורד
-        downloaded_files = os.listdir(DOWNLOAD_FOLDER)
+        downloaded_files = os.listdir()
         if not downloaded_files:
             return jsonify({"error": "Download failed"}), 500
 
