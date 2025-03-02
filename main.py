@@ -28,8 +28,7 @@ def download_video():
         # if not downloaded_files:
         #     return jsonify({"error": "Download failed"}), 500
 
-        filename = os.path.join(DOWNLOAD_FOLDER, "temp")
-
+        filename = "download/temp"
         return send_file(filename, as_attachment=True)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
