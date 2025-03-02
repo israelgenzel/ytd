@@ -15,7 +15,7 @@ def download_video():
 
     try:
         ydl_opts = {
-            'format': 'bestvideo+bestaudio/best',
+            'format': 'bestaudio/best',
             'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
         }
 
