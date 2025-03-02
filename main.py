@@ -7,7 +7,6 @@ app = Flask(__name__)
 DOWNLOAD_FOLDER = "downloads"
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-
 @app.route('/download', methods=['GET'])
 def download_video():
     video_url = request.args.get('url')
@@ -16,24 +15,21 @@ def download_video():
 
     try:
         ydl_opts = {
-            'format': 'bestvideo/best',  # אפשר לשנות לפי הצורך
-            'outtmpl': '%(title)s.%(ext)s',  # מיקום שמירת הקבצים
+            'format': 'bestvideo+bestaudio/best',
+            'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([video_url])
+            info_dict = ydl.extract_info(video_url, download=True)
+            filename = ydl.prepare_filename(info_dict)
 
-        # מציאת הקובץ שהורד
-        downloaded_files = os.listdir(DOWNLOAD_FOLDER)
-        if not downloaded_files:
+        # וידוא שהקובץ קיים
+        if not os.path.exists(filename):
             return jsonify({"error": "Download failed"}), 500
-
-        filename = os.path.join(DOWNLOAD_FOLDER, downloaded_files[0])
 
         return send_file(filename, as_attachment=True)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
