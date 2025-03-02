@@ -26,7 +26,7 @@ def download_video(video_url):
 
         print(f"✅ הורדה הושלמה: {save_path}")
     else:
-        print(f"❌ שגיאה: {response.json()}")
+        print(f"❌ שגיאה: {response.text}")
 
 # דוגמה לשימוש
 video_link = "https://www.youtube.com/watch?v=KxAuxNBY6SE"

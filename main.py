@@ -10,7 +10,7 @@ os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 @app.route('/download', methods=['GET'])
 def download_video():
-    log_files()
+    
     video_url = request.args.get('url')
     if not video_url:
         return jsonify({"error": "Missing video URL"}), 400
@@ -39,10 +39,3 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
 
 
-def log_files():
-    folder = "downloads"
-    if os.path.exists(folder):
-        files = os.listdir(folder)
-        print(f"📂 קבצים בתיקייה '{folder}': {files}")
-    else:
-        print("❌ תיקייה לא קיימת")
