@@ -13,12 +13,12 @@ def download_video():
     print("download_video")
     video_url = request.args.get('url')
     if not video_url:
-        return jsonify({"error": "Missing video URL---------------"}), 400
+        return jsonify({"error": "Missing video URL"}), 400
 
     try:
         ydl_opts = {
             'format': 'bestvideo/best',  # אפשר לשנות לפי הצורך
-            'outtmpl': f'.\\downloads\\temp.mp4',  # מיקום שמירת הקבצים
+            'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:

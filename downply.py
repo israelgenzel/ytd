@@ -1,5 +1,8 @@
+import re
 import requests
 import os
+
+import urllib
 
 # כתובת השרת שלך ב-Railway (עדכן בהתאם ל-URL שקיבלת)
 RAILWAY_SERVER_URL = "https://ytd-production.up.railway.app/download"
@@ -16,8 +19,19 @@ def download_video(video_url):
         content_disposition = response.headers.get("Content-Disposition", "")
         filename = "downloaded_video.mp4"
 
-        if "filename=" in content_disposition:
-            filename = content_disposition.split("filename=")[-1].strip('"')
+       # חיפוש filename*=UTF-8 (עדיף כי הוא תומך בעברית)
+        match_utf8 = re.search(r'filename\*=UTF-8\'\'([^";]+)', content_disposition)
+
+        # אם לא נמצא filename*=UTF-8, ננסה למצוא filename=
+        match_simple = re.search(r'filename="([^"]+)"', content_disposition)
+
+        if match_utf8:
+            filename = urllib.parse.unquote(match_utf8.group(1))  # פענוח שם הקובץ אם הוא מקודד
+        elif match_simple and not match_simple.group(1).strip().startswith("-"):  
+            # קח את filename= רק אם הוא לא שם ריק או מוזר
+            filename = match_simple.group(1).strip()
+
+        print("Filename:", filename)
 
         # שמירת הקובץ
         save_path = os.path.join(os.getcwd(), filename)
