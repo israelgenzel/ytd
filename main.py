@@ -27,6 +27,7 @@ def download_video():
             }],
             'ffmpeg_location':'ffmpeg.exe',
         }
+        print(ydl_opts.get('ffmpeg_location'))
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
