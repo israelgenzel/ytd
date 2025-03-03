@@ -10,26 +10,28 @@ os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 @app.route('/download', methods=['GET'])
 def download_video():
-    
+    print("download_video")
     video_url = request.args.get('url')
     if not video_url:
-        return jsonify({"error": "Missing video URL"}), 400
+        return jsonify({"error": "Missing video URL---------------"}), 400
 
     try:
         ydl_opts = {
             'format': 'bestvideo/best',  # אפשר לשנות לפי הצורך
-            'outtmpl': 'temp',  # מיקום שמירת הקבצים
+            'outtmpl': f'.\\downloads\\temp.mp4',  # מיקום שמירת הקבצים
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
 
-        # # מציאת הקובץ שהורד
-        # downloaded_files = os.listdir()
-        # if not downloaded_files:
-        #     return jsonify({"error": "Download failed"}), 500
+        # מציאת הקובץ שהורד
+        downloaded_files = os.listdir("downloads")
+        print(downloaded_files)
+        if not downloaded_files:
+            return jsonify({"error": "Download failed"}), 500
 
-        filename = "download/temp"
+        print(f"✅ הורדה הושלמה: {downloaded_files[0]}")
+        filename = os.path.join(DOWNLOAD_FOLDER, downloaded_files[0])
         return send_file(filename, as_attachment=True)
     except Exception as e:
         return jsonify({"error": str(e)}), 500

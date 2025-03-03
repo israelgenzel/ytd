@@ -3,12 +3,13 @@ import os
 
 # כתובת השרת שלך ב-Railway (עדכן בהתאם ל-URL שקיבלת)
 RAILWAY_SERVER_URL = "https://ytd-production.up.railway.app/download"
+LOCAL_SERVER_URL = "http://127.0.0.1:8080/download"
 
 def download_video(video_url):
     """שולח בקשת הורדה לשרת ושומר את הקובץ שהתקבל בשם הנכון"""
 
     params = {"url": video_url}
-    response = requests.get(RAILWAY_SERVER_URL, params=params, stream=True)
+    response = requests.get(LOCAL_SERVER_URL, params=params, stream=True)
 
     if response.status_code == 200:
         # קבלת שם הקובץ מהכותרות
