@@ -18,8 +18,14 @@ def download_video():
 
     try:
         ydl_opts = {
-            'format': 'bestvideo/best',
+            'format': 'bestaudio/best',
             'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+            'ffmpeg_location':'/ffmpeg.exe',
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
