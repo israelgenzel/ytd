@@ -11,7 +11,7 @@ LOCAL_SERVER_URL = "http://127.0.0.1:8080/search"
 def searchyoutube(query):
     """שולח בקשת חיפוש לשרת ומחזיר את התוצאות"""
     params = {"query": query}
-    response = requests.get(LOCAL_SERVER_URL, params=params)
+    response = requests.get(RAILWAY_SERVER_URL, params=params)
 
     
 

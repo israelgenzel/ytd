@@ -59,14 +59,15 @@ def search_youtube():
 
     try:
         ydl_opts = {
-            'quiet': True,
+            'quiet': False,
             'extract_flat': True,
             'default_search': 'ytsearch',  # מחפש 10 תוצאות ראשונות
-            
+            'force_generic_extractor': True,
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             result = ydl.extract_info(query, download=False)
+            print(result)
 
         if 'entries' not in result:
             return jsonify({"error": "No results found"}), 404
