@@ -20,14 +20,7 @@ def download_video():
         ydl_opts = {
             'format': 'bestaudio/best',
             'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-            'ffmpeg-location':'ffmpeg.exe',
         }
-        print(ydl_opts.get('ffmpeg-location'))
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
@@ -54,6 +47,43 @@ def download_video():
             return response
 
         return send_file(filename, as_attachment=True)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/search', methods=['GET'])
+def search_youtube():
+    query = request.args.get('query')
+    if not query:
+        return jsonify({"error": "Missing search query"}), 400
+
+    try:
+        ydl_opts = {
+            'quiet': True,
+            'extract_flat': True,
+            'default_search': 'ytsearch',  # מחפש 10 תוצאות ראשונות
+            
+        }
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            result = ydl.extract_info(query, download=False)
+
+        if 'entries' not in result:
+            return jsonify({"error": "No results found"}), 404
+
+        videos = []
+        for entry in result['entries']:
+            videos.append({
+                "title": entry.get("title", "No title"),
+                "url": entry.get("url", ""),
+                "thumbnail": entry.get("thumbnail", ""),
+                "duration": entry.get("duration", ""),
+                "description": entry.get("description", ""),
+                "channel": entry.get("uploader", ""),
+                "upload_date": entry.get("upload_date", ""),
+            })
+
+        return jsonify(videos)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
